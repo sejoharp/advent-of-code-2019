@@ -11,9 +11,19 @@
 (def calculate-total-fuel
   (reduce + (map calculate-fuel get-lines)))
 
-(defn mobule-with-all-fuel
-  [mass]
-  (let [fuel (day01/calculate-fuel mass)]
+(defn calculate-fuel-for-mobule
+  [fuel-sum remaining-weight]
+  (let [fuel (calculate-fuel remaining-weight)]
     (if (< fuel 0)
-      mass
-      (recur (+ mass fuel)))))
+      fuel-sum
+      (calculate-fuel-for-mobule (+ fuel-sum fuel) fuel)
+      )
+    )
+  )
+
+(defn fuel-for-modul
+  [weight]
+  (calculate-fuel-for-mobule 0 weight))
+
+(def total-fuel-for-all-modules
+  (reduce + (map fuel-for-modul get-lines)))
