@@ -1,7 +1,7 @@
 (ns advent-of-code-2019.day01
   (:require [clojure.string :as str]))
 
-(def get-lines
+(def load-module-masses
   (map #(Integer/parseInt %) (str/split-lines (slurp "resources/day01-input"))))
 
 (defn calculate-fuel
@@ -9,7 +9,7 @@
   (int (- (Math/floor (/ mass 3)) 2)))
 
 (def calculate-total-fuel
-  (reduce + (map calculate-fuel get-lines)))
+  (println "result part1:" (reduce + (map calculate-fuel load-module-masses))))
 
 (defn calculate-fuel-for-mobule
   [fuel-sum remaining-weight]
@@ -26,4 +26,4 @@
   (calculate-fuel-for-mobule 0 weight))
 
 (def total-fuel-for-all-modules
-  (reduce + (map fuel-for-modul get-lines)))
+  (println "result part2:" (reduce + (map fuel-for-modul load-module-masses))))
