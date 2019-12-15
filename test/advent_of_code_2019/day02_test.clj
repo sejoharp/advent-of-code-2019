@@ -13,6 +13,13 @@
           (:input (calculate [2, 3, 0, 3] 0))
           [2, 3, 0, 6]))
     )
+  (testing "halt-method"
+    (is (=
+          (halt [99, 3, 0, 3] 0)
+          {:finished true
+           :input [99, 3, 0, 3]
+           :start-position 1}))
+    )
   (testing "halt"
     (is (=
           (:input (calculate [99, 3, 0, 3] 0))
@@ -20,17 +27,20 @@
     )
   (testing "stepping"
     (is (=
-          (stepping [2, 3, 0, 3, 99])
+          (run-program-code [2, 3, 0, 3, 99])
           {:input    [2, 3, 0, 6, 99]
-           :finished true}))
+           :finished true
+           :start-position 5}))
     (is (=
-          (stepping [2, 4, 4, 5, 99, 0])
+          (run-program-code [2, 4, 4, 5, 99, 0])
           {:input    [2, 4, 4, 5, 99, 9801]
-           :finished true}))
+           :finished true
+           :start-position 5}))
     (is (=
-          (stepping [1, 1, 1, 4, 99, 5, 6, 0, 99])
+          (run-program-code [1, 1, 1, 4, 99, 5, 6, 0, 99])
           {:input    [30, 1, 1, 4, 2, 5, 6, 0, 99]
-           :finished true})))
+           :finished true
+           :start-position 9})))
   (testing "restoring"
     (is (=
           restore-state
