@@ -3,87 +3,96 @@
   (:require [advent-of-code-2019.day03 :refer :all]))
 
 (deftest move-left-test
-  (testing "calculates coordinates for moving left"
+  (testing "calculate moves"
     (is (=
-          (move-left [0, 0] 2)
-          [[-1, 0] [-2, 0]])
+          (move-left {:x 0 :y 0 :length 0} 2)
+          [{:x -1 :y 0 :length 1} {:x -2 :y 0 :length 2}])
         )
     (is (=
-          (move-left [0, -2] 2)
-          [[-1, -2] [-2, -2]])
+          (move-left {:x 0 :y -2 :length 2} 2)
+          [{:x -1 :y -2 :length 3} {:x -2 :y -2 :length 4}])
         )
     (is (=
-          (move-left [-3, -2] 2)
-          [[-4, -2] [-5, -2]])
+          (move-left {:x -3 :y -2 :length 5} 2)
+          [{:x -4 :y -2 :length 6} {:x -5 :y -2 :length 7}])
         )
     (is (=
-          (to-coordinates [-3, -2] "L2")
-          [[-4, -2] [-5, -2]])
-        )
-    )
-  (testing "calculates coordinates for moving right"
-    (is (=
-          (move-right [0, 0] 2)
-          [[1, 0] [2, 0]])
+          (move-right {:x 0 :y 0 :length 0} 2)
+          [{:x 1 :y 0 :length 1} {:x 2 :y 0 :length 2}])
         )
     (is (=
-          (to-coordinates [-3, -2] "R2")
-          [[-2, -2] [-1, -2]])
+          (move-up {:x 0 :y 0 :length 0} 2)
+          [{:x 0 :y 1 :length 1} {:x 0 :y 2 :length 2}])
+        )
+    (is (=
+          (move-down {:x 0 :y 0 :length 0} 2)
+          [{:x 0 :y -1 :length 1} {:x 0 :y -2 :length 2}])
         )
     )
-  (testing "calculates coordinates for moving up"
+  (testing "calculates coordinates"
     (is (=
-          (move-up [0, 0] 2)
-          [[0, 1] [0, 2]])
+          (to-coordinates {:x -3 :y -2 :length 5} "L2")
+          [{:x -4 :y -2 :length 6} {:x -5 :y -2 :length 7}])
         )
     (is (=
-          (to-coordinates [-3, -2] "U2")
-          [[-3, -1] [-3, 0]])
+          (to-coordinates {:x -3, :y -2 :length 5} "D2")
+          [{:x -3 :y -3 :length 6} {:x -3 :y -4 :length 7}])
         )
-    )
-  (testing "calculates coordinates for moving down"
+
     (is (=
-          (move-down [0, 0] 2)
-          [[0, -1] [0, -2]])
+          (to-coordinates {:x -3, :y -2 :length 5} "D2")
+          [{:x -3 :y -3 :length 6} {:x -3 :y -4 :length 7}])
         )
     (is (=
-          (to-coordinates [-3, -2] "D2")
-          [[-3, -3] [-3, -4]])
+          (to-coordinates {:x -3, :y -2 :length 5} "D2")
+          [{:x -3 :y -3 :length 6} {:x -3 :y -4 :length 7}])
         )
     )
   (testing "calculates coordinates for a line"
     (is (=
-          (line-to-coordinates [0, 0] ["R1", "U1", "R1", "U1"] [])
-          [[1, 0] [1, 1], [2, 1], [2, 2]])
+          (line-to-coordinates {:x 0 :y 0 :length 0} ["R1", "U1", "R1", "U1"] [])
+          [{:x 1 :y 0 :length 1} {:x 1 :y 1 :length 2}, {:x 2 :y 1 :length 3}, {:x 2 :y 2 :length 4}])
         )
     )
-  (testing "coordinates to maps"
+
+  (testing "add hash key"
     (is (=
-          (to-map [1, 1])
-          {"1|1" {:x 1 :y 1}}
+          (add-key {:x 1 :y 0 :length 1})
+          {"1|0" {:x 1 :y 0 :length 1}}
+          )
+        )
+    )
+
+  (testing "transforms array to map"
+    (is (=
+          (to-map [{:x 1 :y 0 :length 1} {:x 1 :y 1 :length 2}])
+          {"1|0" {:x 1 :y 0 :length 1} "1|1" {:x 1 :y 1 :length 2}}
           )
         )
     )
 
   (testing "finds common items in 2 lists"
-    ;(is (=
-    ;      (common [1, 3, 5] [5, 6, 7])
-    ;      [5]
-    ;      )
-    ;    )
-    ;  (is (=
-    ;        (common [[1, 1], [3, 2], [5, 2]] [[5, 2], [6, 1], [7, 7], [1, 1]])
-    ;        [[1 1], [5 2]]
-    ;        )
-    ;      )
-    )
-  (testing "computes manhattan distance"
     (is (=
-          (manhattan-distance [3, 5])
-          8
+          (common [{:x 1 :y 0 :length 1} {:x 1 :y 1 :length 2}]
+                  [{:x 1 :y 1 :length 12}])
+          [[{:x 1 :y 1 :length 2}, {:x 1 :y 1 :length 12}]]
+          )
+        )
+    (is (=
+          (common [{:x 1 :y 0 :length 1} {:x 1 :y 1 :length 2} {:x 1 :y 3 :length 21}]
+                  [{:x 1 :y 0 :length 9} {:x 1 :y 1 :length 12}])
+          [[{:x 1 :y 0 :length 1} {:x 1 :y 0 :length 9}] [{:x 1 :y 1 :length 2}, {:x 1 :y 1 :length 12}]]
           )
         )
     )
+
+  ;(testing "computes manhattan distance"
+  ;  (is (=
+  ;        (manhattan-distance [3, 5])
+  ;        8
+  ;        )
+  ;      )
+  ;  )
   ;(testing "find closest intersection"
   ;  (is (=
   ;        (find-closest-intersection

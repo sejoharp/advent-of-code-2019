@@ -7,38 +7,62 @@
   (range 1 (inc length)))
 
 (defn move-left [start length]
-  (let [x (first start)
-        y (second start)]
+  (let [x (:x start)
+        y (:y start)
+        current-length (:length start)]
     (->> (calculate-moving-length length)
-         (map #(vector (- x %), y))
+         (map #(hash-map
+                 :x (- x %)
+                 :y y
+                 :length (+ % current-length)
+                 )
+              )
          )
     )
   )
 
 (defn move-right [start length]
-  (let [x (first start)
-        y (second start)]
+  (let [x (:x start)
+        y (:y start)
+        current-length (:length start)]
     (->> (calculate-moving-length length)
-         (map #(vector (+ x %), y))
+         (map #(hash-map
+                 :x (+ x %)
+                 :y y
+                 :length (+ % current-length)
+                 )
+              )
          )
     )
   )
 
 
 (defn move-down [start length]
-  (let [x (first start)
-        y (second start)]
+  (let [x (:x start)
+        y (:y start)
+        current-length (:length start)]
     (->> (calculate-moving-length length)
-         (map #(vector x, (- y %)))
+         (map #(hash-map
+                 :x x
+                 :y (- y %)
+                 :length (+ % current-length)
+                 )
+              )
          )
     )
   )
 
 (defn move-up [start length]
-  (let [x (first start)
-        y (second start)]
+  (let [x (:x start)
+        y (:y start)
+        current-length (:length start)]
     (->> (calculate-moving-length length)
-         (map #(vector x, (+ y %)))
+         (map #(hash-map
+                 :x x
+                 :y (+ y %)
+                 :length (+ % current-length)
+                 )
+              )
          )
     )
   )
@@ -65,23 +89,23 @@
     )
   )
 
-(defn contains [item list]
-  ;(println "searching for:" item)
-  (some #(= item %) list))
-
-(defn to-map [coordinate]
-  (let [x (first coordinate)
-        y (second coordinate)]
+(defn add-key [coordinate]
+  (let [{x :x y :y} coordinate]
     {(str x "|" y) coordinate}
     )
   )
 
+(defn to-map [line]
+  (into {} (map add-key line))
+  )
+
 (defn common [line1 line2]
-  (let [line-1 (into {} (map to-map line1))
-        line-2 (into {} (map to-map line2))]
+  (let [line-1 (to-map line1)
+        line-2 (to-map line2)]
     (->> line-1
-         (filter #(contains? line-2 (key %)))
-         (vals)
+         (keys)
+         (filter #(contains? line-2 %))
+         (map #(vector (get line-1 %) (get line-2 %)))
          )
     )
   )
