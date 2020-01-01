@@ -111,19 +111,19 @@
   )
 
 (defn manhattan-distance [coordinate]
-  (let [x (first coordinate)
-        y (second coordinate)]
+  (let [{x :x y :y} coordinate]
     (+ x y))
   )
 
 (defn find-closest-intersection [line1 line2]
-  (->> (common (line-to-coordinates [0, 0] line1 []) (line-to-coordinates [0, 0] line2 []))
-       (map manhattan-distance)
+  (->> (common (line-to-coordinates {:x 0 :y 0 :length 0} line1 [])
+               (line-to-coordinates {:x 0 :y 0 :length 0} line2 []))
+       (map #(manhattan-distance (first %)))
        (sort)
        ;(println)
        (first)
        )
   )
 
-;(def closest-intersection
-;  (find-closest-intersection line-one line-two))
+(def closest-intersection
+  (find-closest-intersection line-one line-two))
