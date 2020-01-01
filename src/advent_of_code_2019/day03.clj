@@ -120,10 +120,28 @@
                (line-to-coordinates {:x 0 :y 0 :length 0} line2 []))
        (map #(manhattan-distance (first %)))
        (sort)
-       ;(println)
        (first)
        )
   )
 
 (def closest-intersection
   (find-closest-intersection line-one line-two))
+
+(defn wire-length [intersection]
+  (+
+    (:length (first intersection))
+    (:length (second intersection))
+    )
+  )
+
+(defn find-shortest-wire-intersection [line1 line2]
+  (->> (common (line-to-coordinates {:x 0 :y 0 :length 0} line1 [])
+               (line-to-coordinates {:x 0 :y 0 :length 0} line2 []))
+       (map wire-length)
+       (sort)
+       (first)
+       )
+  )
+
+(def shortest-wire-intersection
+  (find-shortest-wire-intersection line-one line-two))
